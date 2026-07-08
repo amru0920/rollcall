@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin · Sistem Rollcall — IKM Lumut</title>
+<meta property="og:title" content="Admin · Sistem Rollcall — IKM Lumut">
+<meta property="og:description" content="IKM Lumut — rollcall kehadiran pelajar, laporan & analisis.">
+<meta property="og:image" content="https://kehadiran-f2u.pages.dev/og.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://kehadiran-f2u.pages.dev/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Admin · Sistem Rollcall — IKM Lumut">
+<meta name="twitter:image" content="https://kehadiran-f2u.pages.dev/og.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#f5f6f8;--surface:#fff;--ink:#1a2230;--muted:#6b7585;--line:#e6e9ef;
+    --brand:#2f5fe0;--brand-dark:#214bc0;--absent:#e0492f;--absent-soft:#fdecea;--present:#1f9d6b;--warn:#d98613;
+    --radius:14px;--shadow:0 1px 2px rgba(20,30,50,.06),0 8px 24px rgba(20,30,50,.06)}
+  *{box-sizing:border-box}html,body{margin:0;padding:0}
+  body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.45}
+  .wrap{max-width:780px;margin:0 auto;padding:0 16px 80px}
+  .hidden{display:none}
+  .auth-screen{min-height:100vh;display:grid;place-items:center;padding:20px}
+  .auth-card{width:100%;max-width:380px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:28px;box-shadow:var(--shadow)}
+  .auth-card .logo{width:48px;height:48px;border-radius:12px;background:var(--ink);display:grid;place-items:center;color:#fff;font-weight:800;margin-bottom:16px}
+  .auth-card h2{margin:0 0 4px;font-size:20px}.auth-card p{margin:0 0 20px;font-size:13px;color:var(--muted)}
+  .auth-card label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin:12px 0 5px}
+  .auth-card input{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;font:inherit;font-size:15px}
+  .auth-card input:focus{outline:2px solid var(--brand);outline-offset:-1px}
+  header.app{position:sticky;top:0;z-index:20;background:var(--surface);border-bottom:1px solid var(--line)}
+  .head-inner{max-width:780px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;gap:12px}
+  .logo{width:36px;height:36px;border-radius:10px;background:var(--ink);display:grid;place-items:center;color:#fff;font-weight:800;font-size:14px;flex:none}
+  .head-inner h1{font-size:15px;margin:0;font-weight:700}.head-inner p{margin:0;font-size:12px;color:var(--muted)}
+  .head-inner .sp{flex:1}
+  .logout{border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-weight:600;font-size:13px;padding:7px 13px;border-radius:9px;cursor:pointer}
+  .tabs{display:flex;gap:4px;max-width:780px;margin:0 auto;padding:0 12px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{flex:0 0 auto;white-space:nowrap;padding:11px 14px;border:0;background:none;font:inherit;font-weight:600;font-size:14px;color:var(--muted);cursor:pointer;border-bottom:2.5px solid transparent}
+  .tab.active{color:var(--brand);border-bottom-color:var(--brand)}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px;margin:16px 0 12px;box-shadow:var(--shadow)}
+  .card h3{margin:0 0 10px;font-size:14px}
+  .addrow{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+  .addrow input,.addrow select{flex:1;min-width:110px;padding:11px 12px;border:1px solid var(--line);border-radius:10px;font:inherit;font-size:15px}
+  .btn{border:0;border-radius:11px;padding:11px 18px;font:inherit;font-weight:700;font-size:14px;cursor:pointer}
+  .btn-primary{background:var(--brand);color:#fff}.btn-primary:active{background:var(--brand-dark)}
+  .btn-ghost{background:var(--surface);border:1px solid var(--line);color:var(--ink)}
+  .btn:disabled{opacity:.5;cursor:default}
+  .item{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+  .item:first-of-type{border-top:0}.item .grow{flex:1;min-width:0}
+  .item .nm{font-weight:600}.item .sub{font-size:12px;color:var(--muted)}
+  .item input{padding:8px;border:1px solid var(--line);border-radius:8px;font:inherit}
+  .item select{padding:8px;border:1px solid var(--line);border-radius:8px;font:inherit;max-width:160px}
+  .icon-btn{border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-weight:600;font-size:12px;padding:6px 11px;border-radius:8px;cursor:pointer}
+  .icon-btn.danger{color:var(--absent)}
+  .acct-tip{background:#eef3ff;border:1px solid #d4e0ff;border-radius:10px;padding:10px 12px;font-size:12.5px;margin-top:8px;line-height:1.6}
+  .acct-tip code{background:#fff;padding:1px 5px;border-radius:4px}
+  .dcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px;margin-bottom:8px;box-shadow:var(--shadow);display:flex;align-items:center;gap:14px}
+  .dcard .gauge{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:14px;flex:none;color:#fff}
+  .dcard .cn{font-weight:700}.dcard .det{font-size:12px;color:var(--muted)}
+  .legend{font-size:12px;color:var(--muted);margin:16px 2px 10px}
+  .empty{text-align:center;color:var(--muted);padding:36px 16px;font-size:14px}.empty strong{display:block;color:var(--ink);font-size:16px;margin-bottom:4px}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:11px 20px;border-radius:999px;font-weight:600;font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:50;max-width:90%;text-align:center}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  .lap-bar{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;margin:16px 0 10px}
+  .lap-bar .field{min-width:130px}
+  .lap-bar label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:5px}
+  .lap-bar input,.lap-bar select{padding:10px 12px;border:1px solid var(--line);border-radius:10px;font:inherit;font-size:14px}
+  .seg{display:flex;gap:4px;background:#eef0f4;border-radius:11px;padding:4px;margin-bottom:12px;flex-wrap:wrap}
+  .seg button{flex:1;min-width:84px;padding:8px;border:0;background:none;border-radius:8px;font:inherit;font-weight:600;font-size:13px;color:var(--muted);cursor:pointer}
+  .seg button.active{background:#fff;color:var(--ink);box-shadow:var(--shadow)}
+  .cards{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+  .mcard{flex:1;min-width:120px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow)}
+  .mcard .n{font-size:26px;font-weight:800}.mcard .l{font-size:12px;color:var(--muted);font-weight:600}
+  .rpt-table{width:100%;border-collapse:collapse;font-size:13px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+  .rpt-table th{text-align:left;padding:9px 11px;background:var(--bg);font-weight:700;font-size:12px;color:var(--muted)}
+  .rpt-table td{padding:9px 11px;border-top:1px solid var(--line);vertical-align:top}
+  .rpt-table tr.hot td{background:#fff5f3}
+  .pill{font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--absent-soft);color:var(--absent)}
+  .pill.g{background:#e7f6ef;color:var(--present)}.pill.w{background:#fdf2e1;color:var(--warn)}
+  @media print{header.app,.tabs,.lap-bar,.seg,.btn{display:none!important}body{background:#fff}.wrap{padding:0}}
+  .drill{background:var(--surface);border:1px solid var(--line);border-top:0;border-radius:0 0 var(--radius) var(--radius);margin:-8px 0 10px;padding:0 14px 12px}
+  .drill table{width:100%;border-collapse:collapse;font-size:13px}
+  .drill th{text-align:left;padding:7px 8px;color:var(--muted);font-size:11px;font-weight:700}
+  .drill td{padding:7px 8px;border-top:1px solid var(--line)}
+  .drill tr.rep td{background:#fff5f3}
+  .logo{object-fit:cover;overflow:hidden}
+  img.logo{background:#fff}
+  .chart-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:14px;box-shadow:var(--shadow)}
+  .chart-card h4{margin:0 0 2px;font-size:15px;color:var(--ink)}
+  @media (max-width:640px){
+    .head-inner h1{font-size:14px}
+    .item{flex-wrap:wrap;align-items:stretch;gap:8px;padding:12px 0}
+    .item .grow{flex:1 1 100%;min-width:0}
+    .item .nm{font-size:15px}
+    .item select{max-width:none;flex:1 1 100%}
+    .item .icon-btn{flex:1 1 auto;text-align:center;padding:9px 10px;font-size:13px}
+    .item [data-act]{min-width:0}
+    .addrow{gap:6px}
+    .addrow input,.addrow select{flex:1 1 100%;min-width:0}
+    .addrow .btn{flex:1 1 100%}
+    .rpt-table{display:block;overflow-x:auto;white-space:nowrap}
+    .cards{grid-template-columns:repeat(2,1fr)!important}
+  }
+</style>
+</head>
+<body>
+
+<div id="login-screen" class="auth-screen">
+  <div class="auth-card">
+    <img class="logo" src="logo.jpg" alt="IKM Lumut">
+    <h2>Panel Admin</h2>
+    <p>Sistem Rollcall · IKM Lumut</p>
+    <label for="adm-ic">No. Kad Pengenalan</label>
+    <input type="text" id="adm-ic" inputmode="numeric" placeholder="cth: 900101071234" autocomplete="username">
+    <button class="btn btn-primary" id="adm-login" style="width:100%;margin-top:18px;padding:13px">Log Masuk</button>
+    <div style="font-size:12px;color:var(--muted);margin-top:14px;text-align:center;line-height:1.5">Hanya guru yang dibenarkan akses admin boleh log masuk di sini.</div>
+  </div>
+</div>
+
+<div id="app" class="hidden">
+<header class="app">
+  <div class="head-inner">
+    <img class="logo" src="logo.jpg" alt="IKM Lumut">
+    <div><h1>Panel Admin</h1><p>Sistem Rollcall</p></div>
+    <div class="sp"></div>
+    <a href="index.html" class="logout" style="text-decoration:none;margin-right:6px">App Guru</a>
+    <button class="logout" id="btn-logout">Log Keluar</button>
+  </div>
+  <div class="tabs">
+    <button class="tab active" data-tab="guru">Ketua Kelas</button>
+    <button class="tab" data-tab="pelajar">Pelajar</button>
+    <button class="tab" data-tab="data">Laporan &amp; Analisis</button>
+  </div>
+</header>
+<div class="wrap">
+  <div id="tab-guru"></div>
+  <div id="tab-pelajar" class="hidden"></div>
+  <div id="tab-data" class="hidden"></div>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="admin-config.js"></script>
+<script src="admin-auth.js"></script>
+<script src="admin-guru.js"></script>
+<script src="admin-pelajar.js"></script>
+<script src="admin-laporan.js"></script>
+<script src="admin-nav.js"></script>
+</body>
+</html>
