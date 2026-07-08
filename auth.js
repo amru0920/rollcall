@@ -41,8 +41,6 @@ async function enterApp(){
   $('#tarikh').value=todayISO();
   try{state.students=await DB.students();}catch(e){toast('Ralat memuat pelajar');state.students=[];}
   try{state.teachersByIc=await DB.teachersMap();}catch(e){state.teachersByIc={};}
-  try{state.groups=await DB.groups();}catch(e){state.groups=[];}
-  try{state.offenceTypes=await DB.offenceTypes();}catch(e){state.offenceTypes=[];}
   fillKelasDropdown();
   fillLaporanKelas();
   await loadCurrent();

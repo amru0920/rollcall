@@ -3,8 +3,6 @@ const DB={
   async myTeacher(ic){const{data,error}=await sb.from('teachers').select('*').eq('ic',ic).maybeSingle();if(error)throw error;return data;},
   async setPasswordFlag(ic){const{error}=await sb.from('teachers').update({password_set:true}).eq('ic',ic);if(error)throw error;},
   async students(){const{data,error}=await sb.from('students').select('*').order('name');if(error)throw error;return data;},
-  async groups(){const{data,error}=await sb.from('groups').select('*, group_members(student_id)').order('name');if(error)throw error;return (data||[]).map(g=>({...g,members:(g.group_members||[]).map(m=>m.student_id)}));},
-  async offenceTypes(){const{data,error}=await sb.from('offence_types').select('name').eq('active',true).order('name');if(error)throw error;return (data||[]).map(x=>x.name);},
   async getExercise(cn,subj,name,edate){const{data,error}=await sb.from('exercises').select('id,exercise_status(student_id,status,ambil_date,hantar_date,semak_date)').eq('class_name',cn).eq('subject',subj||'').eq('name',name).eq('edate',edate).maybeSingle();if(error)throw error;return data;},
   async exercisesList(){const{data,error}=await sb.from('exercises').select('*, exercise_status(status)').order('edate',{ascending:false});if(error)throw error;return data||[];},
   async exerciseDetail(id){const{data,error}=await sb.from('exercises').select('*, exercise_status(student_id,status,ambil_date,hantar_date,semak_date)').eq('id',id).single();if(error)throw error;return data;},
