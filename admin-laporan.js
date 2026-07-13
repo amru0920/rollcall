@@ -17,7 +17,6 @@ async function renderData(){
       <button data-v="kekerapan">Kekerapan</button>
       <button data-v="kelas">Ikut Kelas</button>
       <button data-v="guru">Ikut Guru</button>
-      <button data-v="aktiviti">Aktiviti Guru</button>
       <button data-v="carta">Carta</button>
       <button data-v="detail">Detail</button>
     </div>
