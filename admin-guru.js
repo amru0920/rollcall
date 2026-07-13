@@ -27,7 +27,7 @@ async function renderGuru(){
     }catch(e){ toast('Ralat: '+e.message); }
     $('#g-add').disabled=false;
   };
-  $('#g-templat').onclick=()=>download('templat_guru.csv','Nama,NoKP,Kelas\nCikgu Contoh,900101071234,5 AVICENNA');
+  $('#g-templat').onclick=()=>download('templat_lecturer.csv','Nama,NoKP,Kelas,TelegramChatID\nDr. Ahmad,700101071234,1A,1587397551\nPn. Siti,750202072222,2A,1587397551');
   $('#g-import').onclick=()=>$('#g-file').click();
   $('#g-file').onchange=ev=>{const f=ev.target.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>importGuruCSV(rd.result);rd.readAsText(f,'UTF-8');ev.target.value='';};
   $('#g-search').oninput=e=>{
@@ -55,15 +55,15 @@ async function importGuruCSV(text){
   const rows=parseCSV(text); if(rows.length<2){toast('Fail kosong');return;}
   const h=rows[0].map(x=>x.toLowerCase().replace(/[^a-z]/g,''));
   const find=ks=>h.findIndex(x=>ks.includes(x));
-  const iN=find(['nama','name']),iK=find(['nokp','nokad','ic','no']),iC=find(['kelas','class']);
+  const iN=find(['nama','name']),iK=find(['nokp','nokad','ic','no']),iC=find(['kelas','class']),iT=find(['telegramchatid','chatid','telegram','tgid']);
   if(iN<0||iK<0){toast('Lajur perlu: Nama, NoKP');return;}
   const list=[];
-  for(let r=1;r<rows.length;r++){const c=rows[r];const name=(c[iN]||'').trim(),ic=(c[iK]||'').replace(/\D/g,''),kelas=(iC>=0?(c[iC]||'').trim():'');if(name&&ic)list.push({name,ic,class_name:kelas});}
+  for(let r=1;r<rows.length;r++){const c=rows[r];const name=(c[iN]||'').trim(),ic=(c[iK]||'').replace(/\D/g,''),kelas=(iC>=0?(c[iC]||'').trim():'');const tgid=(iT>=0?(c[iT]||'').trim():'');if(name&&ic)list.push({name,ic,class_name:kelas,telegram_chat_id:tgid||null});}
   if(!list.length){toast('Tiada baris ada NoKP — tak boleh cipta akaun tanpa NoKP');return;}
   if(!confirm(`Cipta ${list.length} akaun guru? Password default = 4 digit akhir IC.`))return;
   let ok=0,skip=0;
   for(const g of list){
-    try{ await callFn({action:'create',ic:g.ic,name:g.name,class_name:g.class_name}); ok++; toast(`Mencipta… ${ok}/${list.length}`); }
+    try{ await callFn({action:'create',ic:g.ic,name:g.name,class_name:g.class_name}); if(g.telegram_chat_id){ await sb.from('teachers').update({telegram_chat_id:g.telegram_chat_id}).eq('ic',g.ic); } ok++; toast(`Mencipta… ${ok}/${list.length}`); }
     catch(e){ skip++; }
   }
   renderGuru(); toast(`Siap: ${ok} dicipta, ${skip} gagal/dah wujud`);
