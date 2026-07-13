@@ -67,6 +67,22 @@ $('#btn-simpan').onclick=async()=>{
     await DB.saveSession(current.kelas,current.date,'',state.teacher?.ic||null,masa,
       Object.entries(current.absent).map(([student_id,reason])=>({student_id,reason})));
     $('#save-info').textContent='Disimpan ✓ · '+masa;$('#btn-simpan').textContent='Kemaskini Rekod';toast('Rekod disimpan ✓');
+    // Hantar surat amaran ke Telegram PA untuk yang Tidak Hadir sahaja
+    const tidakHadir=Object.entries(current.absent).filter(([,r])=>r==='Tidak Hadir').map(([id])=>id);
+    if(tidakHadir.length){
+      try{
+        const sess=await sb.auth.getSession();
+        const token=sess.data.session?.access_token||'';
+        const res=await fetch(SUPABASE_URL+'/functions/v1/send-amaran',{
+          method:'POST',
+          headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+          body:JSON.stringify({student_ids:tidakHadir,date:current.date,masa,class_name:current.kelas})
+        });
+        const r=await res.json();
+        if(r.ok) toast('📨 Surat amaran dihantar ke Telegram PA ✓');
+        else toast('⚠️ Rekod disimpan tapi Telegram gagal: '+(r.error||''));
+      }catch(tgErr){toast('⚠️ Telegram error: '+tgErr.message);}
+    }
   }catch(e){toast('Ralat simpan: '+e.message);}
   $('#btn-simpan').disabled=false;
 };
