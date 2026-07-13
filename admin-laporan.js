@@ -71,7 +71,6 @@ function computeRPT(){
     perTeacher[tk]=perTeacher[tk]||{sessions:0,absent:0};
     perTeacher[tk].sessions++;
     (s.absentees||[]).forEach(a=>{
-      if(a.reason===NA)return;
       const st=a.students||{}; const id=st.id||(st.nokp||Math.random());
       entries.push({date:s.date,kelas:s.class_name,subject:s.subject||'-',masa:s.session_time||'',reason:a.reason,name:st.name||'-',nokp:st.nokp||''});
       perStudent[id]=perStudent[id]||{name:st.name||'-',nokp:st.nokp||'',kelas:st.kelas||'',count:0,reasons:{}};
